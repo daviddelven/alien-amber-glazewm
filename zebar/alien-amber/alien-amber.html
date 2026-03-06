@@ -28,7 +28,6 @@
       battery: { type: "battery" },
       memory: { type: "memory" },
       weather: { type: "weather" },
-      media: { type: "media" },
     });
 
     createRoot(document.getElementById("root")).render(<App />);
@@ -51,16 +50,7 @@
         return "poor";
       }
 
-      // ── Volume icon ────────────────────────────────────────────────────────
-      function getVolumeIcon(volume, isMuted) {
-        if (isMuted || volume === 0)
-          return <i className="nf nf-md-volume_mute"></i>;
-        if (volume < 35)
-          return <i className="nf nf-md-volume_low"></i>;
-        if (volume < 70)
-          return <i className="nf nf-md-volume_medium"></i>;
-        return <i className="nf nf-md-volume_high"></i>;
-      }
+
 
       // ── Battery icon ───────────────────────────────────────────────────────
       function getBatteryIcon(batteryOutput) {
@@ -93,9 +83,7 @@
       const focused = output.glazewm?.focusedContainer;
       const activeApp = focused ? (focused.title || focused.processName) : null;
 
-      // ── Volume state ───────────────────────────────────────────────────────
-      const volumeLevel = Math.round(output.media?.volume ?? 0);
-      const isMuted = output.media?.isMuted ?? false;
+
 
       return (
         <div className="app">
@@ -167,13 +155,7 @@
           {/* ── RIGHT: System info ───────────────────────────────────────── */}
           <div className="right">
 
-            {/* Volume */}
-            {output.media !== undefined && (
-              <div className={`volume ${isMuted ? "muted" : ""}`}>
-                {getVolumeIcon(volumeLevel, isMuted)}
-                <span className="vol-value">{isMuted ? "—" : `${volumeLevel}%`}</span>
-              </div>
-            )}
+
 
             {/* Network semaphore */}
             {output.network && (
