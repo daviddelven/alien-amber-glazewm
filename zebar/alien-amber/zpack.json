@@ -1,6 +1,6 @@
 {
   "$schema": "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/zpack-schema.json",
-  "name": "vanilla-clear",
+  "name": "alien-amber",
   "version": "0.0.0",
   "description": "",
   "tags": [],
@@ -8,8 +8,8 @@
   "repositoryUrl": "",
   "widgets": [
     {
-      "name": "vanilla-clear",
-      "htmlPath": "./vanilla-clear.html",
+      "name": "alien-amber",
+      "htmlPath": "./alien-amber.html",
       "zOrder": "bottom_most",
       "shownInTaskbar": false,
       "focused": false,
@@ -27,7 +27,7 @@
       },
       "presets": [
         {
-          "name": "vanilla-clear",
+          "name": "alien-amber",
           "anchor": "top_left",
           "offsetX": "0px",
           "offsetY": "0px",

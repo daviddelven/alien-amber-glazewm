@@ -122,7 +122,7 @@ Zebar picks up CSS/HTML changes automatically on save.
 ## Credits
 
 - Color palette: [Alien Amber VS Codium Theme](https://github.com/daviddelven/alien-amber-theme) by [@daviddelven](https://github.com/daviddelven)
-- Base widget structure: [vimichael/make-windows-pretty](https://github.com/vimichael/make-windows-pretty)`vanilla-clear`
+- Base widget structure: [vimichael/make-windows-pretty](https://github.com/vimichael/make-windows-pretty) `alien-amber` (formerly `vanilla-clear`)
 
 ## License
 
