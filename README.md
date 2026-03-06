@@ -48,6 +48,13 @@
 
 ---
 
+## Automation (Recommended)
+
+If you have access to the DDV infrastructure automation scripts, run:
+
+`powershell
+& 'G:\My Drive\DDV_PARA\2. AREAS\DIGITAL SYSTEMS\AI\infrastructure\automation\glazewm-theme-sync\sync-theme.ps1'
+``n
 ## Installation
 
 ### Prerequisites
