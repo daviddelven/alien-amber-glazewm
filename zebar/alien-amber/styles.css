@@ -195,7 +195,6 @@ body {
 .network,
 .memory,
 .cpu,
-.volume,
 .battery,
 .weather {
   margin-right: 16px;
@@ -263,22 +262,6 @@ i {
 
 .net-dot.offline {
   background: var(--amber-dim);
-}
-
-/* Volume */
-.volume {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.volume.muted i,
-.volume.muted .vol-value {
-  color: var(--amber-dim);
-}
-
-.volume i {
-  margin-right: 0;
 }
 
 /* Weather */
