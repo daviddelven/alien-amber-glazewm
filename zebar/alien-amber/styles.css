@@ -1,0 +1,293 @@
+/* =============================================================
+   Alien Amber — Zebar Theme v2
+   Retro CRT phosphor terminal aesthetic
+   Inspired by: github.com/daviddelven/alien-amber-theme
+   ============================================================= */
+
+@import "https://www.nerdfonts.com/assets/css/webfont.css";
+
+/* --- CSS Variables --- */
+:root {
+  --bg-bar: rgba(0, 0, 0, 0.88);
+  --amber-bright: #f0d040;
+  --amber-primary: #d4a820;
+  --amber-mid: #a07818;
+  --amber-dim: #5a4010;
+  --amber-dark: #3a2810;
+  --amber-comment: #4a3810;
+  --green: #88c840;
+  --orange: #e87830;
+  --red: #c84020;
+  --blue: #4890c0;
+
+  --ws-bg: rgba(90, 64, 16, 0.25);
+  --ws-bg-displayed: rgba(90, 64, 16, 0.55);
+  --ws-bg-focused: rgba(240, 208, 64, 0.90);
+  --ws-text-focused: #000000;
+
+  --scanline: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.06) 2px,
+      rgba(0, 0, 0, 0.06) 4px);
+}
+
+/* --- Reset & base --- */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Courier Prime", "Courier New", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--amber-primary);
+  letter-spacing: 0.04em;
+}
+
+#root {
+  background: var(--bg-bar);
+  background-image: var(--scanline);
+  border-bottom: 1px solid var(--amber-dim);
+  box-shadow: 0 2px 12px rgba(212, 168, 32, 0.12);
+}
+
+/* --- Layout --- */
+.app {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  height: 100%;
+  padding: 0 1.5vw;
+}
+
+.left,
+.center,
+.right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.center {
+  justify-self: center;
+  gap: 0;
+}
+
+.right {
+  justify-self: end;
+}
+
+/* --- Logo --- */
+.logo {
+  color: var(--amber-bright);
+  font-size: 15px;
+  margin-right: 10px;
+  text-shadow: 0 0 8px var(--amber-primary), 0 0 20px var(--amber-dim);
+  transition: text-shadow 0.3s ease;
+}
+
+.logo:hover {
+  text-shadow: 0 0 12px var(--amber-bright), 0 0 30px var(--amber-primary);
+}
+
+/* --- Workspaces --- */
+.workspaces {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 6px;
+}
+
+.workspace {
+  background: var(--ws-bg);
+  padding: 3px 9px;
+  color: var(--amber-mid);
+  border: 1px solid var(--amber-comment);
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  letter-spacing: 0.06em;
+  transition: background 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.workspace.displayed {
+  background: var(--ws-bg-displayed);
+  border-color: var(--amber-mid);
+  color: var(--amber-primary);
+}
+
+.workspace.focused,
+.workspace:hover {
+  background: var(--ws-bg-focused);
+  border-color: var(--amber-bright);
+  color: var(--ws-text-focused);
+  box-shadow: 0 0 8px rgba(240, 208, 64, 0.5);
+  font-weight: bold;
+}
+
+/* --- Binding mode & tiling direction --- */
+.binding-mode,
+.tiling-direction {
+  background: rgba(212, 168, 32, 0.15);
+  color: var(--amber-bright);
+  border: 1px solid var(--amber-mid);
+  border-radius: 2px;
+  line-height: 1;
+  padding: 3px 8px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.binding-mode {
+  margin-right: 6px;
+  color: var(--orange);
+  border-color: var(--orange);
+  background: rgba(232, 120, 48, 0.12);
+}
+
+/* --- CENTER: Date/time + window title --- */
+.center-time {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--amber-bright);
+  letter-spacing: 0.06em;
+  filter: drop-shadow(0 0 3px rgba(212, 168, 32, 0.5));
+}
+
+.center-date {
+  font-size: 11px;
+  color: var(--amber-mid);
+  margin-left: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.center-sep {
+  color: var(--amber-dim);
+  margin: 0 8px;
+  font-size: 11px;
+}
+
+.center-app {
+  font-size: 11px;
+  color: var(--amber-primary);
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.04em;
+}
+
+/* --- RIGHT: System info widgets --- */
+.logo,
+.binding-mode,
+.tiling-direction,
+.network,
+.memory,
+.cpu,
+.volume,
+.battery,
+.weather {
+  margin-right: 16px;
+}
+
+.weather {
+  margin-right: 0;
+}
+
+i {
+  color: var(--amber-mid);
+  margin-right: 5px;
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+
+/* CPU high-usage */
+.cpu .high-usage {
+  color: var(--red);
+  text-shadow: 0 0 6px var(--red);
+}
+
+/* Battery */
+.battery {
+  position: relative;
+}
+
+.battery .charging-icon {
+  position: absolute;
+  font-size: 7px;
+  left: -9px;
+  top: 3px;
+  color: var(--green);
+}
+
+/* Network quality semaphore dot */
+.network {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.net-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.net-dot.good {
+  background: var(--green);
+  box-shadow: 0 0 5px var(--green);
+}
+
+.net-dot.fair {
+  background: var(--orange);
+  box-shadow: 0 0 5px var(--orange);
+}
+
+.net-dot.poor {
+  background: var(--red);
+  box-shadow: 0 0 5px var(--red);
+}
+
+.net-dot.offline {
+  background: var(--amber-dim);
+}
+
+/* Volume */
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.volume.muted i,
+.volume.muted .vol-value {
+  color: var(--amber-dim);
+}
+
+.volume i {
+  margin-right: 0;
+}
+
+/* Weather */
+.weather i {
+  color: var(--blue);
+}
+
+/* Memory & CPU */
+.memory,
+.cpu {
+  color: var(--amber-primary);
+}

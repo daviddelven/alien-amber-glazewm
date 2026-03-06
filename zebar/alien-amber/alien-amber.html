@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" type="text/css" href="../normalize.css" />
+  <link rel="stylesheet" type="text/css" href="./styles.css" />
+  <link rel="icon" href="data:;" />
+  <script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"
+    integrity="sha256-aS0B0wnsaDByLfE16h4MDCP1fQFccysd1YWOcV+gbBo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module">
+    import React, { useState, useEffect } from "https://esm.sh/react@18?dev";
+    import { createRoot } from "https://esm.sh/react-dom@18/client?dev";
+    import * as zebar from "https://esm.sh/zebar@2";
+
+    const providers = zebar.createProviderGroup({
+      glazewm: { type: "glazewm" },
+      network: { type: "network" },
+      cpu: { type: "cpu" },
+      date: { type: "date", formatting: "HH:mm" },
+      date2: { type: "date", formatting: "EEE d MMM" },
+      battery: { type: "battery" },
+      memory: { type: "memory" },
+      weather: { type: "weather" },
+      media: { type: "media" },
+    });
+
+    createRoot(document.getElementById("root")).render(<App />);
+
+    function App() {
+      const [output, setOutput] = useState(providers.outputMap);
+
+      useEffect(() => {
+        providers.onOutput(() => setOutput(providers.outputMap));
+      }, []);
+
+      // ── Network semaphore ──────────────────────────────────────────────────
+      function getNetworkQuality(networkOutput) {
+        const type = networkOutput.defaultInterface?.type;
+        if (!type || type === "unknown") return "offline";
+        if (type === "ethernet") return "good";
+        const strength = networkOutput.defaultGateway?.signalStrength ?? 0;
+        if (strength >= 65) return "good";
+        if (strength >= 35) return "fair";
+        return "poor";
+      }
+
+      // ── Volume icon ────────────────────────────────────────────────────────
+      function getVolumeIcon(volume, isMuted) {
+        if (isMuted || volume === 0)
+          return <i className="nf nf-md-volume_mute"></i>;
+        if (volume < 35)
+          return <i className="nf nf-md-volume_low"></i>;
+        if (volume < 70)
+          return <i className="nf nf-md-volume_medium"></i>;
+        return <i className="nf nf-md-volume_high"></i>;
+      }
+
+      // ── Battery icon ───────────────────────────────────────────────────────
+      function getBatteryIcon(batteryOutput) {
+        if (batteryOutput.chargePercent > 90) return <i className="nf nf-fa-battery_4"></i>;
+        if (batteryOutput.chargePercent > 70) return <i className="nf nf-fa-battery_3"></i>;
+        if (batteryOutput.chargePercent > 40) return <i className="nf nf-fa-battery_2"></i>;
+        if (batteryOutput.chargePercent > 20) return <i className="nf nf-fa-battery_1"></i>;
+        return <i className="nf nf-fa-battery_0"></i>;
+      }
+
+      // ── Weather icon ───────────────────────────────────────────────────────
+      function getWeatherIcon(weatherOutput) {
+        switch (weatherOutput.status) {
+          case "clear_day": return <i className="nf nf-weather-day_sunny"></i>;
+          case "clear_night": return <i className="nf nf-weather-night_clear"></i>;
+          case "cloudy_day": return <i className="nf nf-weather-day_cloudy"></i>;
+          case "cloudy_night": return <i className="nf nf-weather-night_alt_cloudy"></i>;
+          case "light_rain_day": return <i className="nf nf-weather-day_sprinkle"></i>;
+          case "light_rain_night": return <i className="nf nf-weather-night_alt_sprinkle"></i>;
+          case "heavy_rain_day": return <i className="nf nf-weather-day_rain"></i>;
+          case "heavy_rain_night": return <i className="nf nf-weather-night_alt_rain"></i>;
+          case "snow_day": return <i className="nf nf-weather-day_snow"></i>;
+          case "snow_night": return <i className="nf nf-weather-night_alt_snow"></i>;
+          case "thunder_day": return <i className="nf nf-weather-day_lightning"></i>;
+          case "thunder_night": return <i className="nf nf-weather-night_alt_lightning"></i>;
+        }
+      }
+
+      // ── Active window title ────────────────────────────────────────────────
+      const activeApp = output.glazewm?.focusedContainer?.processName ?? null;
+
+      // ── Volume state ───────────────────────────────────────────────────────
+      const volumeLevel = Math.round(output.media?.volume ?? 0);
+      const isMuted = output.media?.isMuted ?? false;
+
+      return (
+        <div className="app">
+
+          {/* ── LEFT: Logo + Workspaces ───────────────────────────────────── */}
+          <div className="left">
+            <i className="logo nf nf-fa-terminal"></i>
+
+            {output.glazewm && (
+              <>
+                {output.glazewm.bindingModes.map((mode) => (
+                  <button
+                    className="binding-mode"
+                    key={mode.name}
+                    onClick={() =>
+                      output.glazewm.runCommand(
+                        `wm-disable-binding-mode --name ${mode.name}`
+                      )
+                    }
+                  >
+                    {mode.displayName ?? mode.name}
+                  </button>
+                ))}
+
+                <div className="workspaces">
+                  {output.glazewm.currentWorkspaces.map((workspace) => (
+                    <button
+                      className={`workspace ${workspace.hasFocus ? "focused" : ""} ${workspace.isDisplayed ? "displayed" : ""}`}
+                      key={workspace.name}
+                      onClick={() =>
+                        output.glazewm.runCommand(
+                          `focus --workspace ${workspace.name}`
+                        )
+                      }
+                    >
+                      {workspace.displayName ?? workspace.name}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  className="tiling-direction"
+                  onClick={() =>
+                    output.glazewm.runCommand("toggle-tiling-direction")
+                  }
+                >
+                  {output.glazewm.tilingDirection === "horizontal"
+                    ? <i className="nf nf-md-swap_horizontal"></i>
+                    : <i className="nf nf-md-swap_vertical"></i>
+                  }
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* ── CENTER: Time · Date | Active App ─────────────────────────── */}
+          <div className="center">
+            <span className="center-time">{output.date?.formatted}</span>
+            <span className="center-date">{output.date2?.formatted}</span>
+
+            {activeApp && (
+              <>
+                <span className="center-sep">|</span>
+                <span className="center-app">{activeApp}</span>
+              </>
+            )}
+          </div>
+
+          {/* ── RIGHT: System info ───────────────────────────────────────── */}
+          <div className="right">
+
+            {/* Volume */}
+            {output.media !== undefined && (
+              <div className={`volume ${isMuted ? "muted" : ""}`}>
+                {getVolumeIcon(volumeLevel, isMuted)}
+                <span className="vol-value">{isMuted ? "—" : `${volumeLevel}%`}</span>
+              </div>
+            )}
+
+            {/* Network semaphore */}
+            {output.network && (
+              <div className="network">
+                <span className={`net-dot ${getNetworkQuality(output.network)}`}></span>
+                <i className={
+                  output.network.defaultInterface?.type === "ethernet"
+                    ? "nf nf-md-ethernet_cable"
+                    : "nf nf-md-wifi"
+                }></i>
+              </div>
+            )}
+
+            {/* Memory */}
+            {output.memory && (
+              <div className="memory">
+                <i className="nf nf-fae-chip"></i>
+                {Math.round(output.memory.usage)}%
+              </div>
+            )}
+
+            {/* CPU */}
+            {output.cpu && (
+              <div className="cpu">
+                <i className="nf nf-oct-cpu"></i>
+                <span className={output.cpu.usage > 85 ? "high-usage" : ""}>
+                  {Math.round(output.cpu.usage)}%
+                </span>
+              </div>
+            )}
+
+            {/* Battery */}
+            {output.battery && (
+              <div className="battery">
+                {output.battery.isCharging && (
+                  <i className="nf nf-md-power_plug charging-icon"></i>
+                )}
+                {getBatteryIcon(output.battery)}
+                {Math.round(output.battery.chargePercent)}%
+              </div>
+            )}
+
+            {/* Weather */}
+            {output.weather && (
+              <div className="weather">
+                {getWeatherIcon(output.weather)}
+                {Math.round(output.weather.celsiusTemp)}°C
+              </div>
+            )}
+
+          </div>
+        </div>
+      );
+    }
+  </script>
+</body>
+
+</html>
