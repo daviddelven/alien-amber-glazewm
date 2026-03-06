@@ -1,11 +1,20 @@
 {
   "$schema": "https://github.com/glzr-io/zebar/raw/v3.1.1/resources/zpack-schema.json",
   "name": "alien-amber",
-  "version": "0.0.0",
-  "description": "",
-  "tags": [],
-  "previewImages": [],
-  "repositoryUrl": "",
+  "version": "1.0.0",
+  "description": "Retro CRT phosphor terminal aesthetic for GlazeWM and Zebar, inspired by Alien Amber.",
+  "tags": [
+    "glazewm",
+    "zebar",
+    "theme",
+    "amber",
+    "retro",
+    "phosphor"
+  ],
+  "previewImages": [
+    "../../preview/preview.png"
+  ],
+  "repositoryUrl": "https://github.com/daviddelven/alien-amber-glazewm",
   "widgets": [
     {
       "name": "alien-amber",
