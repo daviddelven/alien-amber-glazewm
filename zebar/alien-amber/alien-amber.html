@@ -90,7 +90,8 @@
       }
 
       // ── Active window title ────────────────────────────────────────────────
-      const activeApp = output.glazewm?.focusedContainer?.processName ?? null;
+      const focused = output.glazewm?.focusedContainer;
+      const activeApp = focused ? (focused.title || focused.processName) : null;
 
       // ── Volume state ───────────────────────────────────────────────────────
       const volumeLevel = Math.round(output.media?.volume ?? 0);
